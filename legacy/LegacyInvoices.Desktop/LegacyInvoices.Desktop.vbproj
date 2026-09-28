@@ -1,0 +1,49 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
+    <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
+    <ProjectGuid>{C9DFB641-A362-428A-9835-C82D4B3791B0}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>LegacyInvoices.Desktop</RootNamespace>
+    <AssemblyName>LegacyInvoices.Desktop</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <StartupObject>LegacyInvoices.Desktop.Startup</StartupObject>
+    <MyType>WindowsFormsWithCustomSubMain</MyType>
+    <StartAction>Project</StartAction>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineTrace>true</DefineTrace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Compile Include="Startup.vb" />
+    <Compile Include="MainForm.vb"><SubType>Form</SubType></Compile>
+    <Compile Include="OrderDetailsForm.vb"><SubType>Form</SubType></Compile>
+    <None Include="App.config" />
+    <ProjectReference Include="..\LegacyInvoices.Business\LegacyInvoices.Business.vbproj">
+      <Project>{70607CF1-585B-480A-8A9E-33FEA3362256}</Project>
+      <Name>LegacyInvoices.Business</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+</Project>
