@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Order Desk · Modern .NET</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Order Desk home"><span class="brand-icon">o<span>·</span></span>order desk<span class="brand-period">.</span></a>
+    <div class="workspace-label">WORKSPACE</div>
+    <nav aria-label="Main navigation">
+      <a href="#overview" class="selected"><span>▦</span> Overview</a>
+      <a href="#new-order"><span>＋</span> New order</a>
+      <a href="#catalogue"><span>▤</span> Catalogue</a>
+      <a href="#history"><span>◷</span> Order history</a>
+    </nav>
+    <div class="migration-note"><span class="eyebrow">THE MIGRATION DEMO</span><h2>Same rules.<br>A new foundation.</h2><p>VB.NET Framework → C# .NET 8</p><span class="version-pill">MODERN EDITION</span></div>
+    <div class="sidebar-footer"><span class="avatar">ND</span><div>Northwind Demo<small>Local workspace · GBP</small></div></div>
+  </aside>
+  <main id="overview">
+    <header class="topbar"><div><span class="breadcrumb">WORKSPACE / OVERVIEW</span><h1>A little order.<br>A lot of possibility.</h1><p>Your catalogue, customers, and orders. All in one place.</p></div><span class="environment"><i></i> Local demo</span></header>
+    <div id="notice" role="status" aria-live="polite" class="notice" hidden></div>
+    <div id="error" role="alert" class="error" hidden></div>
+    <section class="metrics" aria-label="Sales overview">
+      <article><span>Gross sales</span><strong id="gross">—</strong><small>Including VAT · active orders</small></article>
+      <article><span>Active orders</span><strong id="active">—</strong><small id="cancelled">Loading order history</small></article>
+      <article><span>Units sold</span><strong id="units">—</strong><small>Across the product catalogue</small></article>
+      <article class="stock-metric"><span>Low stock</span><strong id="low">—</strong><small>Products with 5 units or fewer</small></article>
+    </section>
+    <div class="work-grid">
+      <section id="new-order" class="panel builder">
+        <div class="section-heading"><div><span class="eyebrow">MAKE SOMETHING HAPPEN</span><h2>Create an order</h2></div><span class="step">01 / 02</span></div>
+        <form id="order-form"><fieldset id="order-fields">
+          <label for="customer">Customer account</label><select id="customer" required></select>
+          <p class="hint" id="customer-hint">Choose a customer to see pricing.</p>
+          <div class="line-head"><label>Products</label><span>QUANTITY</span></div>
+          <div id="cart"></div>
+          <button type="button" class="text-button" id="add-line">＋ Add a product</button>
+          <div class="totals"><div><span>Subtotal</span><span id="subtotal">—</span></div><div><span>Trade discount</span><span id="discount">—</span></div><div><span>VAT <small>(20%)</small></span><span id="vat">—</span></div><div class="total"><span>Order total</span><strong id="total">—</strong></div></div>
+          <div class="form-actions"><button type="button" class="button secondary" id="quote">Review totals</button><button type="submit" class="button primary" id="place" disabled>Place order <span>↗</span></button></div>
+          <p class="hint">Prices come from the catalogue. Stock is reserved when you place an order.</p>
+        </fieldset></form>
+      </section>
+      <section id="catalogue" class="panel catalogue">
+        <div class="section-heading"><div><span class="eyebrow">READY FOR YOUR NEXT ORDER</span><h2>The catalogue <span class="count" id="product-count">6</span></h2></div></div>
+        <label class="sr-only" for="search">Search products</label><input type="search" id="search" placeholder="Search products, SKU, or category…">
+        <div id="products" class="product-list"><p class="empty">Loading catalogue…</p></div>
+        <div class="catalogue-footer"><span class="stock-dot"></span> Stock updates automatically after each order.</div>
+      </section>
+    </div>
+    <section id="history" class="panel history">
+      <div class="section-heading"><div><span class="eyebrow">THE PAPER TRAIL</span><h2>Order history</h2></div><div class="history-actions"><label class="sr-only" for="status-filter">Filter order status</label><select id="status-filter"><option value="all">All orders</option><option value="Placed">Placed</option><option value="Cancelled">Cancelled</option></select><a class="button secondary" href="/api/exports/orders.csv" download>↓ Export CSV</a></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Order</th><th>Customer</th><th>Date</th><th>Status</th><th class="numeric">Total</th><th>Actions</th></tr></thead><tbody id="orders"></tbody></table></div>
+      <p id="empty-orders" class="empty">Your first order starts here. Review the sample basket above, then place it.</p>
+    </section>
+    <footer class="page-footer"><span>BUILT FOR THE NEXT CHAPTER.</span><span>C# domain + API · JSON persistence · Original rules preserved</span></footer>
+  </main>
+  <dialog id="order-detail"><div class="section-heading"><h2>Order details</h2><button type="button" id="close-detail" class="icon-button" aria-label="Close order details">×</button></div><div id="detail-body"></div></dialog>
+  <dialog id="cancel-dialog" aria-labelledby="cancel-title"><h2 id="cancel-title">Cancel this order?</h2><p>Its items will return to stock. The cancelled order will remain in your history.</p><div class="form-actions"><button type="button" class="button secondary" id="keep-order">Keep order</button><button type="button" class="button primary" id="confirm-cancel">Confirm cancellation</button></div></dialog>
+  <dialog id="success-dialog" aria-labelledby="success-title" aria-describedby="success-summary">
+    <div class="success-icon" aria-hidden="true">✓</div>
+    <h2 id="success-title">Order created successfully</h2>
+    <p id="success-summary"></p>
+    <p class="success-reference" id="success-reference"></p>
+    <div class="form-actions"><button type="button" class="button secondary" id="success-close" autofocus>Continue</button><button type="button" class="button primary" id="success-history">View order history</button></div>
+  </dialog>
+</body>
+</html>
