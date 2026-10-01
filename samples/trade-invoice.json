@@ -1,0 +1,7 @@
+{
+  "customerType": "Trade",
+  "lines": [
+    { "unitPrice": 125.00, "quantity": 8 },
+    { "unitPrice": 49.50, "quantity": 2 }
+  ]
+}

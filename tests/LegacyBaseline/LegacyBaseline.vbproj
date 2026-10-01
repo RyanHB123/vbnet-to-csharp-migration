@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>LegacyInvoices</RootNamespace>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../legacy/LegacyInvoices/InvoiceCalculator.vb" Link="InvoiceCalculator.vb" />
+    <Compile Include="../../legacy/LegacyInvoices/OrderStore.vb" Link="OrderStore.vb" />
+  </ItemGroup>
+</Project>

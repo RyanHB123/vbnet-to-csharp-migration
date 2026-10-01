@@ -1,0 +1,34 @@
+name: Migration checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  modern:
+    name: Modern .NET on ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - run: dotnet restore MigrationDemo.sln --configfile NuGet.Config
+      - run: dotnet build MigrationDemo.sln -c Release --no-restore --warnaserror
+      - run: dotnet run --project tests/MigrationChecks -c Release --no-build
+      - name: HTTP integration checks
+        shell: pwsh
+        run: ./scripts/Test-Api.ps1
+      - uses: microsoft/setup-msbuild@v2
+        if: runner.os == 'Windows'
+      - name: Verify actual legacy executable parity
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./scripts/Test-Legacy.ps1
