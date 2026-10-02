@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="340" viewBox="0 0 1200 340" role="img" aria-labelledby="title desc">
+  <title id="title">Legacy VB.NET to modern C# .NET</title>
+  <desc id="desc">An order management migration from VB.NET Framework 4.8 to C# .NET 8.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#10192c"/>
+      <stop offset="1" stop-color="#172f47"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="340" rx="20" fill="url(#background)"/>
+  <path d="M820 0V340M920 0V340M1020 0V340M1120 0V340M800 70H1200M800 170H1200M800 270H1200" stroke="#ffffff" opacity=".035"/>
+  <rect x="52" y="48" width="238" height="30" rx="15" fill="#244354"/>
+  <text x="71" y="68" font-family="Segoe UI,Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="2" fill="#8ee4ce">MIGRATION CASE STUDY</text>
+  <text x="52" y="140" font-family="Segoe UI,Arial,sans-serif" font-size="46" font-weight="700" fill="#f5f8ff">Legacy VB.NET</text>
+  <text x="52" y="198" font-family="Segoe UI,Arial,sans-serif" font-size="46" font-weight="700" fill="#8ee4ce">→ Modern C# .NET</text>
+  <text x="54" y="244" font-family="Segoe UI,Arial,sans-serif" font-size="19" fill="#bcc9da">Preserve the rules. Modernize the architecture.</text>
+  <text x="54" y="296" font-family="Segoe UI,Arial,sans-serif" font-size="13" letter-spacing="1" fill="#98aac0">ORDER MANAGEMENT   /   C# DASHBOARD   /   BEHAVIOR PARITY</text>
+  <rect x="790" y="70" width="344" height="79" rx="12" fill="#ffffff" fill-opacity=".04" stroke="#557087"/>
+  <text x="814" y="100" font-family="Segoe UI,Arial,sans-serif" font-size="12" letter-spacing="2" fill="#98aac0">BEFORE</text>
+  <text x="814" y="130" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="#eef4ff">.NET Framework 4.8</text>
+  <path d="M962 159V180M954 174L962 182L970 174" fill="none" stroke="#8ee4ce" stroke-width="2"/>
+  <rect x="790" y="192" width="344" height="79" rx="12" fill="#8ee4ce" fill-opacity=".08" stroke="#8ee4ce"/>
+  <text x="814" y="222" font-family="Segoe UI,Arial,sans-serif" font-size="12" letter-spacing="2" fill="#8ee4ce">AFTER</text>
+  <text x="814" y="252" font-family="Segoe UI,Arial,sans-serif" font-size="22" fill="#eef4ff">.NET 8 + ASP.NET Core</text>
+</svg>

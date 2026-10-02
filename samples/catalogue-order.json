@@ -1,0 +1,7 @@
+{
+  "customerId": "CUST-001",
+  "lines": [
+    { "sku": "MON-001", "quantity": 8 },
+    { "sku": "DOCK-002", "quantity": 2 }
+  ]
+}

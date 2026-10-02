@@ -1,0 +1,61 @@
+@baseUrl = http://localhost:5080
+
+### Search the catalogue
+GET {{baseUrl}}/api/products?search=monitor
+
+### Seeded customer profiles
+GET {{baseUrl}}/api/customers
+
+### Catalogue quote (does not reserve stock)
+POST {{baseUrl}}/api/orders/quote
+Content-Type: application/json
+
+{
+  "customerId": "CUST-001",
+  "lines": [{ "sku": "MON-001", "quantity": 8 }, { "sku": "DOCK-002", "quantity": 2 }]
+}
+
+### Place and persist an order (deducts stock)
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+
+{
+  "customerId": "CUST-001",
+  "lines": [{ "sku": "MON-001", "quantity": 8 }, { "sku": "DOCK-002", "quantity": 2 }]
+}
+
+### Order history
+GET {{baseUrl}}/api/orders?customerId=CUST-001
+
+### Cancel an order; replace the ID with a placed order ID
+POST {{baseUrl}}/api/orders/REPLACE_WITH_ORDER_ID/cancel
+
+### Sales summary (cancelled orders excluded from sales)
+GET {{baseUrl}}/api/reports/sales
+
+### Download order history
+GET {{baseUrl}}/api/exports/orders.csv
+
+### Health check
+GET {{baseUrl}}/health
+
+### Trade customer: total 1186.92
+POST {{baseUrl}}/api/invoices/quote
+Content-Type: application/json
+
+{
+  "customerType": "Trade",
+  "lines": [
+    { "unitPrice": 125, "quantity": 8 },
+    { "unitPrice": 49.50, "quantity": 2 }
+  ]
+}
+
+### Invalid quantity: HTTP 400
+POST {{baseUrl}}/api/invoices/quote
+Content-Type: application/json
+
+{
+  "customerType": "Retail",
+  "lines": [{ "unitPrice": 10, "quantity": 0 }]
+}
