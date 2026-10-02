@@ -5,7 +5,7 @@
     <OptionStrict>Off</OptionStrict>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../../legacy/LegacyInvoices/InvoiceCalculator.vb" Link="InvoiceCalculator.vb" />
-    <Compile Include="../../legacy/LegacyInvoices/OrderStore.vb" Link="OrderStore.vb" />
+    <Compile Include="../../legacy/LegacyInvoices.Business/InvoiceCalculator.vb" Link="InvoiceCalculator.vb" />
+    <Compile Include="../../legacy/LegacyInvoices.Business/OrderStore.vb" Link="OrderStore.vb" />
   </ItemGroup>
 </Project>

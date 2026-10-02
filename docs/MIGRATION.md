@@ -2,7 +2,7 @@
 
 ## 1. Establish two concrete implementations
 
-The legacy solution runs on .NET Framework 4.8 with VB.NET, a classic project file, a console menu, and a DataSet persisted as XML. The modern solution has a C# domain library, a C# JSON repository, a C# CLI, and a C# ASP.NET Core API serving a browser dashboard.
+The legacy solution runs on .NET Framework 4.8 with VB.NET, a Windows Forms desktop interface, classic project files, and a DataSet persisted as XML. The modern solution has a C# domain library, a C# JSON repository, a C# CLI, and a C# ASP.NET Core API serving a browser dashboard.
 
 These are independently implemented applications with matching catalogue data and order workflows. The modern production code has no dependency on the legacy assembly. A separate test-only VB.NET project links the original source to support comparisons.
 
@@ -65,9 +65,9 @@ The executable C# check runner has 21 groups:
 - The same repository contracts against JSON and in-memory implementations, including nested snapshot isolation and rollback.
 - Alternative pricing policies and a fixed clock, queries without write access, rejected invalid policy output, and CSV escaping/culture.
 
-The broad comparisons compile the original VB.NET source on .NET 8. The separate Windows script builds LegacyInvoices.sln and runs the actual .NET Framework executable, comparing the invoice and the quote/place/reopen/report/cancel/export workflow with C# subprocesses. IDs and timestamps are generated independently and are not expected to match.
+The behavior comparisons compile the original VB.NET business-rule source on .NET 8. The separate Windows script builds `LegacyInvoices.sln` in Debug and Release and checks that the Windows Forms executable and symbols were produced. It does not automate the desktop interface or execute a headless .NET Framework comparison. Reviewers can run the two applications and compare the workflow directly.
 
-The HTTP script starts a real Kestrel server with an isolated file and checks the public endpoints. GitHub Actions runs the modern checks on Windows and Linux and the Framework checks on Windows. Browser checks are performed separately; they are not part of that automated workflow.
+The HTTP script starts a real Kestrel server with an isolated file and checks the public endpoints. GitHub Actions runs the modern checks on Windows and Linux and builds the Framework desktop app on Windows. Desktop UI checks are performed manually; they are not part of that automated workflow.
 
 ## 7. Explain the limits and next steps
 

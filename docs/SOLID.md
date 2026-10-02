@@ -89,6 +89,6 @@ dotnet run --project tests/MigrationChecks -c Release --no-build
 pwsh -File scripts/Test-Api.ps1
 ```
 
-On Windows, also run `pwsh -File scripts/Test-Legacy.ps1`. The full runner has 21 groups: 15 existing migration/workflow groups and 6 additional design-contract groups. The additional groups cover both repository implementations, alternative policies/clock, a reader without writes, invalid policy output, and CSV escaping/culture.
+On Windows, also run `pwsh -File scripts/Test-Legacy.ps1` to build the .NET Framework desktop app in Debug and Release. The full runner has 21 groups: 15 existing migration/workflow groups and 6 additional design-contract groups. The additional groups cover both repository implementations, alternative policies/clock, a reader without writes, invalid policy output, and CSV escaping/culture.
 
 SOLID guides the boundaries here; it is not a certification of the entire application. The full-state repository is a deliberate simplification for a file-based demo. A database adapter must preserve transaction behavior, and a larger application may need a more focused unit-of-work model. Query and formatting classes remain concrete because their current consumers do not need interchangeable implementations. The legacy design is retained so reviewers can compare the architecture and verify behavior across the migration.

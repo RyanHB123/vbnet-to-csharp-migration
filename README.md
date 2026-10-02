@@ -10,38 +10,40 @@ A portfolio case study migrating a VB.NET / .NET Framework 4.8 application to a 
 
 The modern application's domain, persistence, API, and CLI are **all C#**. Its browser frontend is plain HTML/CSS/JavaScript. VB.NET remains in the legacy application and the test-only baseline used to verify the translation.
 
-![Modern Order Desk dashboard](docs/dashboard.png)
+| Legacy VB.NET desktop | Modern C# dashboard |
+|---|---|
+| [![VB.NET order-entry screen](docs/legacy-desktop.png)](docs/legacy-desktop.png) | [![C# order dashboard](docs/dashboard.png)](docs/dashboard.png) |
 
-*Real application screenshot with a synthetic order. This is a purpose-built portfolio demo, not a claimed client project.*
+*Actual application screenshots with synthetic sample data. Click either image to view it at full size. This is a purpose-built portfolio demo, not a claimed client project.*
 
 ## Two solutions
 
 | Open in Visual Studio | Application |
 |---|---|
-| [LegacyInvoices.sln](LegacyInvoices.sln) | VB.NET Windows Forms desktop application and console on .NET Framework 4.8 |
+| [LegacyInvoices.sln](LegacyInvoices.sln) | VB.NET Windows Forms desktop application on .NET Framework 4.8 |
 | [MigrationDemo.sln](MigrationDemo.sln) | Modern C# domain, infrastructure, API, CLI, and migration checks |
 
-For the modern dashboard, set **ModernInvoices.Api** as the Startup Project. For the legacy desktop application, set **LegacyInvoices.Desktop** as the Startup Project. The **LegacyInvoices** project is the original console application and opens an interactive command menu when launched from Visual Studio. If Visual Studio kept an older startup selection, right-click the desired project in Solution Explorer and choose **Set as Startup Project**, then press F5.
+For the modern dashboard, set **ModernInvoices.Api** as the Startup Project. For the legacy application, set **LegacyInvoices.Desktop** as the Startup Project. If Visual Studio kept an older startup selection, right-click the desired project in Solution Explorer and choose **Set as Startup Project**, then press F5.
 
-The legacy solution contains three projects: **LegacyInvoices.Desktop**, **LegacyInvoices**, and **LegacyInvoices.Business**. If Visual Studio reports that `Global.LegacyInvoices.OrderStore` is undefined, close the solution and reopen this repository's `LegacyInvoices.sln` so Visual Studio loads the new **LegacyInvoices.Business** reference. The desktop project can also be checked independently with `msbuild legacy/LegacyInvoices.Desktop/LegacyInvoices.Desktop.vbproj /t:Rebuild /p:Configuration=Debug`.
+The legacy solution contains two projects: **LegacyInvoices.Desktop** and **LegacyInvoices.Business**. If Visual Studio reports that `Global.LegacyInvoices.OrderStore` is undefined, close the solution and reopen this repository's `LegacyInvoices.sln` so Visual Studio loads the **LegacyInvoices.Business** reference. The desktop project can also be checked independently with `msbuild legacy/LegacyInvoices.Desktop/LegacyInvoices.Desktop.vbproj /t:Rebuild /p:Configuration=Debug`.
 
 ## Features you can demonstrate
 
 | Feature | Legacy VB.NET | Modern C# |
 |---|---|---|
-| Searchable catalogue | Desktop grid and console table | CLI, API, dashboard |
+| Searchable catalogue | Desktop grid | CLI, API, dashboard |
 | Retail/trade customer profiles | Three seeded profiles | Same three profiles |
-| Catalogue-based quotes | Desktop order builder and console commands | Server-priced order builder |
+| Catalogue-based quotes | Desktop order builder | Server-priced order builder |
 | Discount and VAT calculation | Original decimal calculator | C# translation with 2,000 comparisons |
 | Stock validation | Before saving | Before saving, HTTP 409 on conflict |
 | Place an order | Saves order and deducts stock | Saves order and deducts stock |
 | Cancel an order | Restores stock once | Same rule, plus dashboard action |
-| Order history | Desktop customer/status filters, saved-line detail, console filter | Customer API filter, status UI filter, detail dialog |
-| Sales report | Desktop metrics and console summary | CLI/API summary and dashboard metrics |
-| CSV export | Desktop file export and console output | CLI output and browser download |
+| Order history | Desktop customer/status filters and saved-line detail | Customer API filter, status UI filter, detail dialog |
+| Sales report | Desktop metrics | CLI/API summary and dashboard metrics |
+| CSV export | Desktop file export | CLI output and browser download |
 | Persistence | DataSet + XML with schema | JSON repository behind an interface |
 | Historic prices | Saved order-line snapshot | Immutable C# record snapshot |
-| Presentation | Windows Forms desktop and interactive command menu | Interactive command menu + responsive dashboard |
+| Presentation | Windows Forms desktop | Interactive command menu + responsive dashboard |
 
 Customer profiles are demo pricing accounts, not sign-in accounts. The catalogue and profiles are seeded, read-only data; stock changes through orders.
 
@@ -72,40 +74,24 @@ No database installation, account, secret, third-party NuGet package, or fronten
 
 ## Run the legacy application
 
-Use Windows with Visual Studio or Build Tools, MSBuild, and the **.NET Framework 4.8 targeting pack**. Open `LegacyInvoices.sln`, set **LegacyInvoices.Desktop** as the Startup Project, and press F5. If Visual Studio says the startup project cannot be launched, reopen the updated solution and choose **Set as Startup Project** on **LegacyInvoices.Desktop**. To run the console version from a Developer PowerShell:
+Use Windows with Visual Studio or Build Tools, MSBuild, and the **.NET Framework 4.8 targeting pack**. Open `LegacyInvoices.sln`, set **LegacyInvoices.Desktop** as the Startup Project, and press F5. If Visual Studio says the startup project cannot be launched, reopen the solution and choose **Set as Startup Project** on **LegacyInvoices.Desktop**. To build and launch the desktop app from a Developer PowerShell:
 
 ```powershell
 msbuild LegacyInvoices.sln /p:Configuration=Release
-./legacy/LegacyInvoices/bin/Release/LegacyInvoices.exe --interactive
+./legacy/LegacyInvoices.Desktop/bin/Release/LegacyInvoices.Desktop.exe
 ```
 
-Try these commands in the legacy menu:
-
-```text
-products monitor
-customers
-quote CUST-001 MON-001:8 DOCK-002:2
-place CUST-001 MON-001:8 DOCK-002:2
-orders
-report
-cancel ORD-<paste-the-created-id>
-export
-exit
-```
-
-The C# console supports the same commands:
+In the desktop app, select a customer, add products, review the totals, and place an order. The confirmation, order history, stock figures, report, and CSV export can all be inspected there. Run the C# dashboard afterwards to compare the same workflow. The modern solution also includes an optional C# command menu:
 
 ```sh
 dotnet run --project src/ModernInvoices.Cli -c Release --no-build -- --interactive
 ```
 
-Both executables accept commands directly, which makes scripted comparisons possible. Running either with no arguments prints the original sample invoice.
-
 ## Where the data lives
 
 | Application | Default location | Override |
 |---|---|---|
-| Legacy CLI | `data/orders.xml` beside its executable | `LEGACY_DATA_FILE` environment variable |
+| Legacy desktop | `data/orders.xml` beside its executable | `LEGACY_DATA_FILE` environment variable |
 | Modern CLI | `data/orders.json` beside its executable | `MODERN_DATA_FILE` environment variable |
 | Modern API | `src/ModernInvoices.Api/data/orders.json` when started with `dotnet run` | `--DataFile` argument or `DataFile` environment variable |
 
@@ -177,12 +163,12 @@ pwsh -File scripts/Test-Legacy.ps1
 | Persistence | Reopening both stores, rejected orders leave files unchanged, historic prices remain intact |
 | Concurrency | 12 requests for the last 3 hubs accept exactly 3 orders |
 | HTTP integration | Dashboard served; real Kestrel requests verify totals, order lifecycle, 400/404/409, and CSV |
-| Actual runtime comparison | VB.NET Framework executable and C# CLI run the same quote/place/reopen/report/cancel/export sequence |
+| Legacy desktop build | Windows script builds the .NET Framework 4.8 Windows Forms app in Debug and Release and checks its executable and symbols |
 | Design contracts | JSON/in-memory substitution, read-only query dependencies, replaceable pricing policies, fixed clock, and CSV escaping/culture |
 
-The check runner is an executable that exits nonzero on failure: **use `dotnet run`, not `dotnet test`**. The broad checks compile unchanged legacy source into `tests/LegacyBaseline` on .NET 8; the Windows script separately runs the real .NET Framework executable. These provide different kinds of evidence.
+The check runner is an executable that exits nonzero on failure: **use `dotnet run`, not `dotnet test`**. Its behavior comparisons compile the legacy business-rule source into `tests/LegacyBaseline` on .NET 8. The Windows script checks that the actual .NET Framework desktop app builds; it does not automate the Windows Forms UI. Open both applications to compare their interfaces manually.
 
-[GitHub Actions](.github/workflows/ci.yml) runs the modern build/checks on Windows and Ubuntu and the legacy runtime comparison on Windows. The PowerShell scripts require [PowerShell 7](https://github.com/PowerShell/PowerShell). CI is configured; local success is not a claim that GitHub Actions has already run.
+[GitHub Actions](.github/workflows/ci.yml) runs the modern build/checks on Windows and Ubuntu and builds the legacy desktop app on Windows. The PowerShell scripts require [PowerShell 7](https://github.com/PowerShell/PowerShell). Check the workflow page for the latest run status.
 
 ## Architecture
 
@@ -191,7 +177,7 @@ The modern code applies **SOLID** with focused services, separate query/report/e
 ```mermaid
 flowchart LR
     subgraph Legacy["Before · VB.NET / Framework 4.8"]
-        L[Console commands] --> S[DataSet order store]
+        L[Windows Forms desktop] --> S[DataSet order store]
         S --> V[VB.NET calculator]
         S --> X[(XML snapshot)]
     end
@@ -207,18 +193,17 @@ flowchart LR
 ```
 
 ```text
-LegacyInvoices.sln                 VB.NET Framework desktop and console solution
+LegacyInvoices.sln                 VB.NET Framework desktop solution
 MigrationDemo.sln                  Modern C# solution + verification baseline
-legacy/LegacyInvoices/             DataSet/XML implementation and console menu
 legacy/LegacyInvoices.Desktop/     Windows Forms order management interface
-legacy/LegacyInvoices.Business/    Shared VB.NET pricing and XML order rules
+legacy/LegacyInvoices.Business/    VB.NET pricing and DataSet/XML order rules
 src/ModernInvoices.Core/           C# policies, order service, queries, storage contracts
 src/ModernInvoices.Infrastructure/ C# JSON repository, CSV exporter, demo seed data
 src/ModernInvoices.Api/            C# endpoints + wwwroot dashboard
 src/ModernInvoices.Cli/            C# command menu
 tests/LegacyBaseline/             Test-only linked legacy VB.NET source
 tests/MigrationChecks/            C# behavior and persistence checks
-scripts/                          Real HTTP and cross-runtime checks
+scripts/                          Real HTTP checks and legacy desktop build check
 samples/                          HTTP and JSON examples
 ```
 

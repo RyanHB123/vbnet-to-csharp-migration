@@ -31,8 +31,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Compile Include="..\LegacyInvoices\InvoiceCalculator.vb"><Link>InvoiceCalculator.vb</Link></Compile>
-    <Compile Include="..\LegacyInvoices\OrderStore.vb"><Link>OrderStore.vb</Link></Compile>
+    <Compile Include="InvoiceCalculator.vb" />
+    <Compile Include="OrderStore.vb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
 </Project>

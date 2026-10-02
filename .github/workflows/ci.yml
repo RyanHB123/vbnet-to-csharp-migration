@@ -28,7 +28,7 @@ jobs:
         run: ./scripts/Test-Api.ps1
       - uses: microsoft/setup-msbuild@v2
         if: runner.os == 'Windows'
-      - name: Verify actual legacy executable parity
+      - name: Build legacy Windows Forms desktop
         if: runner.os == 'Windows'
         shell: pwsh
         run: ./scripts/Test-Legacy.ps1

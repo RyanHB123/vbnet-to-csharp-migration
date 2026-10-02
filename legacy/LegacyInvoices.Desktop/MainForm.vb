@@ -41,7 +41,7 @@ Public Class MainForm
 
         Dim heading As New Label With {.Text = "LEGACY ORDER DESK   /   Sales & inventory", .Dock = DockStyle.Top, .Height = 62, .Padding = New Padding(16), .BackColor = Color.FromArgb(34, 52, 72), .ForeColor = Color.White, .Font = New Font("Segoe UI", 17, FontStyle.Bold)}
         Dim footer As New StatusStrip()
-        footer.Items.Add(New ToolStripStatusLabel("XML store: " & Path.GetFullPath(dataFile)))
+        footer.Items.Add(New ToolStripStatusLabel("XML store: " & Path.GetFileName(dataFile)) With {.ToolTipText = Path.GetFullPath(dataFile)})
         Controls.Add(tabs)
         Controls.Add(heading)
         Controls.Add(footer)

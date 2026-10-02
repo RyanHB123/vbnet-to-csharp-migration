@@ -8,15 +8,9 @@ Open LegacyInvoices.sln and MigrationDemo.sln side by side. Be clear that this i
 
 ## 0:45 — Show the legacy workflow
 
-Run the legacy interactive console with --interactive. Show products, customers, and a quote:
+Start `LegacyInvoices.Desktop` from `LegacyInvoices.sln`. Show the catalogue and customers, add 8 monitors and 2 docks for Northwind Studio, then review the quote. Place the order and show the confirmation, stock deduction, history, and sales report. Cancel it to show stock restoration.
 
-```text
-products monitor
-customers
-quote CUST-001 MON-001:8 DOCK-002:2
-```
-
-Explain the DataSet/XML storage and the original calculator's DataTable inputs and positional outputs. Open legacy/LegacyInvoices/OrderStore.vb and InvoiceCalculator.vb.
+Explain the DataSet/XML storage and the original calculator's DataTable inputs and positional outputs. Open `legacy/LegacyInvoices.Business/OrderStore.vb` and `InvoiceCalculator.vb`.
 
 ## 1:30 — Show the C# architecture
 
@@ -55,7 +49,7 @@ On Windows:
 pwsh -File scripts/Test-Legacy.ps1
 ```
 
-Explain the 2,000 deterministic invoice comparisons, the half-penny rounding boundary, and the concurrent stock check. Distinguish comparisons against linked VB.NET source on .NET 8 from the actual .NET Framework subprocess checks.
+Explain the 2,000 deterministic invoice comparisons, the half-penny rounding boundary, and the concurrent stock check. The check runner compiles linked VB.NET business-rule source on .NET 8. The Windows script builds the .NET Framework desktop app in Debug and Release; compare the two interfaces by running them separately.
 
 ## 4:30 — Discuss the tradeoffs
 
