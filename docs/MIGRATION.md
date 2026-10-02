@@ -2,7 +2,7 @@
 
 ## 1. Establish two concrete implementations
 
-The legacy solution runs on .NET Framework 4.8 with VB.NET, a Windows Forms desktop interface, classic project files, and a DataSet persisted as XML. The modern solution has a C# domain library, a C# JSON repository, a C# CLI, and a C# ASP.NET Core API serving a browser dashboard.
+The legacy solution runs on .NET Framework 4.8 with VB.NET, a Windows Forms desktop interface, classic project files, and a DataSet persisted as XML. The modern solution has a C# domain library, a C# JSON repository, and a C# ASP.NET Core API serving a browser dashboard.
 
 These are independently implemented applications with matching catalogue data and order workflows. The modern production code has no dependency on the legacy assembly. A separate test-only VB.NET project links the original source to support comparisons.
 
@@ -35,11 +35,10 @@ Quotes are read-only. Placement checks the current stock again, so a previously 
 | ModernInvoices.Core | Models, invoice calculation/policies, order processing, queries, storage contracts |
 | ModernInvoices.Infrastructure | JSON persistence, transaction locking, CSV formatting, demo seed data |
 | ModernInvoices.Api | HTTP input/output, dependency injection, static dashboard assets |
-| ModernInvoices.Cli | Commands and console presentation |
 
 The order service uses IOrderRepository callbacks. Each callback loads a fresh state; a mutation is committed only when the callback completes. The JSON repository serializes requests with a lock and replaces the file using a temporary snapshot. Reads and writes use the same lock. Failed validation leaves the saved file unchanged.
 
-The modern design applies [SOLID principles](SOLID.md) explicitly. OrderService handles quote/place/cancel workflows. CatalogQueries, OrderQueries, and SalesReportQuery retrieve and summarize data through IOrderReader. CSV formatting lives in Infrastructure. InvoiceCalculator depends on discount/tax policy interfaces; OrderService depends on IInvoiceCalculator and an injected TimeProvider. The hosts select implementations at startup.
+The modern design applies [SOLID principles](SOLID.md) explicitly. OrderService handles quote/place/cancel workflows. CatalogQueries, OrderQueries, and SalesReportQuery retrieve and summarize data through IOrderReader. CSV formatting lives in Infrastructure. InvoiceCalculator depends on discount/tax policy interfaces; OrderService depends on IInvoiceCalculator and an injected TimeProvider. The API selects implementations at startup.
 
 The legacy store keeps similar responsibilities together in one VB.NET class with DataTables and XML column names. This gives reviewers concrete before/after code to compare.
 

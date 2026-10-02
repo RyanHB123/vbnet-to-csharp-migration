@@ -8,7 +8,7 @@
 
 A portfolio case study migrating a VB.NET / .NET Framework 4.8 application to a C# / .NET 8 application. Both versions manage products, customer profiles, orders, stock, sales reports, and CSV exports. The modern version adds a responsive browser dashboard and an ASP.NET Core API.
 
-The modern application's domain, persistence, API, and CLI are **all C#**. Its browser frontend is plain HTML/CSS/JavaScript. VB.NET remains in the legacy application and the test-only baseline used to verify the translation.
+The modern application's domain, persistence, and API are **all C#**. Its browser frontend is plain HTML/CSS/JavaScript. VB.NET remains in the legacy application and the test-only baseline used to verify the translation.
 
 | Legacy VB.NET desktop | Modern C# dashboard |
 |---|---|
@@ -21,7 +21,7 @@ The modern application's domain, persistence, API, and CLI are **all C#**. Its b
 | Open in Visual Studio | Application |
 |---|---|
 | [LegacyInvoices.sln](LegacyInvoices.sln) | VB.NET Windows Forms desktop application on .NET Framework 4.8 |
-| [MigrationDemo.sln](MigrationDemo.sln) | Modern C# domain, infrastructure, API, CLI, and migration checks |
+| [MigrationDemo.sln](MigrationDemo.sln) | Modern C# domain, infrastructure, API, and migration checks |
 
 For the modern dashboard, set **ModernInvoices.Api** as the Startup Project. For the legacy application, set **LegacyInvoices.Desktop** as the Startup Project. If Visual Studio kept an older startup selection, right-click the desired project in Solution Explorer and choose **Set as Startup Project**, then press F5.
 
@@ -31,7 +31,7 @@ The legacy solution contains two projects: **LegacyInvoices.Desktop** and **Lega
 
 | Feature | Legacy VB.NET | Modern C# |
 |---|---|---|
-| Searchable catalogue | Desktop grid | CLI, API, dashboard |
+| Searchable catalogue | Desktop grid | API and dashboard |
 | Retail/trade customer profiles | Three seeded profiles | Same three profiles |
 | Catalogue-based quotes | Desktop order builder | Server-priced order builder |
 | Discount and VAT calculation | Original decimal calculator | C# translation with 2,000 comparisons |
@@ -39,11 +39,11 @@ The legacy solution contains two projects: **LegacyInvoices.Desktop** and **Lega
 | Place an order | Saves order and deducts stock | Saves order and deducts stock |
 | Cancel an order | Restores stock once | Same rule, plus dashboard action |
 | Order history | Desktop customer/status filters and saved-line detail | Customer API filter, status UI filter, detail dialog |
-| Sales report | Desktop metrics | CLI/API summary and dashboard metrics |
-| CSV export | Desktop file export | CLI output and browser download |
+| Sales report | Desktop metrics | API summary and dashboard metrics |
+| CSV export | Desktop file export | Browser download |
 | Persistence | DataSet + XML with schema | JSON repository behind an interface |
 | Historic prices | Saved order-line snapshot | Immutable C# record snapshot |
-| Presentation | Windows Forms desktop | Interactive command menu + responsive dashboard |
+| Presentation | Windows Forms desktop | Responsive browser dashboard |
 
 Customer profiles are demo pricing accounts, not sign-in accounts. The catalogue and profiles are seeded, read-only data; stock changes through orders.
 
@@ -81,21 +81,16 @@ msbuild LegacyInvoices.sln /p:Configuration=Release
 ./legacy/LegacyInvoices.Desktop/bin/Release/LegacyInvoices.Desktop.exe
 ```
 
-In the desktop app, select a customer, add products, review the totals, and place an order. The confirmation, order history, stock figures, report, and CSV export can all be inspected there. Run the C# dashboard afterwards to compare the same workflow. The modern solution also includes an optional C# command menu:
-
-```sh
-dotnet run --project src/ModernInvoices.Cli -c Release --no-build -- --interactive
-```
+In the desktop app, select a customer, add products, review the totals, and place an order. The confirmation, order history, stock figures, report, and CSV export can all be inspected there. Run the C# dashboard afterwards to compare the same workflow.
 
 ## Where the data lives
 
 | Application | Default location | Override |
 |---|---|---|
 | Legacy desktop | `data/orders.xml` beside its executable | `LEGACY_DATA_FILE` environment variable |
-| Modern CLI | `data/orders.json` beside its executable | `MODERN_DATA_FILE` environment variable |
-| Modern API | `src/ModernInvoices.Api/data/orders.json` when started with `dotnet run` | `--DataFile` argument or `DataFile` environment variable |
+| Modern dashboard/API | `src/ModernInvoices.Api/data/orders.json` when started with `dotnet run` | `--DataFile` argument or `DataFile` environment variable |
 
-Directories and data files are created as needed. A quote is read-only; the first successful place/cancel mutation saves the entire state. Restarting the application reloads it. Each application starts with its own store, so a CLI order does not automatically appear in the API. To demonstrate CLI/API access to the same JSON file, point both at the same absolute path **and run them sequentially**.
+Directories and data files are created as needed. A quote is read-only; the first successful placement or cancellation saves the entire state. The legacy application saves its products, stock, customers, and orders together in one XML file; the modern application saves them in JSON. Restarting an application reloads its saved data. The two applications start with matching sample catalogues and customers but keep separate data files, so an order in one does not appear in the other.
 
 Each store is designed for **one application process per data file**. The modern API serializes concurrent requests through one repository instance and replaces the saved snapshot only after a transaction succeeds. Multiple processes or replicas require a database. The demo does not import an existing legacy XML file into modern JSON.
 
@@ -159,7 +154,7 @@ pwsh -File scripts/Test-Legacy.ps1
 | Check | Evidence |
 |---|---|
 | Core runner: 21 groups | Known totals, threshold/rounding, 2,000 generated invoice comparisons, validation, and SOLID contract checks |
-| Order parity | Matching seeded catalogues, quotes, saved orders, stock deductions, cancellations, reports |
+| Matching order behavior | Matching seeded catalogues, quotes, saved orders, stock deductions, cancellations, reports |
 | Persistence | Reopening both stores, rejected orders leave files unchanged, historic prices remain intact |
 | Concurrency | 12 requests for the last 3 hubs accept exactly 3 orders |
 | HTTP integration | Dashboard served; real Kestrel requests verify totals, order lifecycle, 400/404/409, and CSV |
@@ -172,24 +167,24 @@ The check runner is an executable that exits nonzero on failure: **use `dotnet r
 
 ## Architecture
 
-The modern code applies **SOLID** with focused services, separate query/report/export classes, replaceable pricing policies, and storage abstractions owned by Core. Read-only queries depend on `IOrderReader`; order processing depends on `IOrderRepository` and `IInvoiceCalculator`. The API and CLI choose the concrete implementations at startup. See [SOLID design and evidence](docs/SOLID.md) for the mapping, contracts, tests, and limits.
+The modern code applies **SOLID** with focused services, separate query/report/export classes, replaceable pricing policies, and storage abstractions owned by Core. Read-only queries depend on `IOrderReader`; order processing depends on `IOrderRepository` and `IInvoiceCalculator`. The API chooses the concrete implementations at startup. See [SOLID design and evidence](docs/SOLID.md) for the mapping, contracts, tests, and limits.
+
+The diagram shows each application's runtime flow. They run independently: the VB.NET desktop uses VB.NET business code, and the modern dashboard uses C# business code. Verification tests compare their totals and order behavior separately.
 
 ```mermaid
 flowchart LR
     subgraph Legacy["Before · VB.NET / Framework 4.8"]
         L[Windows Forms desktop] --> S[DataSet order store]
         S --> V[VB.NET calculator]
-        S --> X[(XML snapshot)]
+        S --> X[(XML data file)]
     end
     subgraph Modern["After · C# / .NET 8"]
         UI[Browser dashboard] --> API[ASP.NET Core API]
         API --> D[C# domain services]
-        CLI[C# console] --> D
-        D --> R[IOrderRepository]
-        R --> J[(JSON repository)]
+        D --> R[Storage through Core interfaces]
+        R --> J[JSON repository]
+        J --> F[(JSON data file)]
     end
-    V -. Calculation parity .-> D
-    S -. Order lifecycle parity .-> D
 ```
 
 ```text
@@ -200,7 +195,6 @@ legacy/LegacyInvoices.Business/    VB.NET pricing and DataSet/XML order rules
 src/ModernInvoices.Core/           C# policies, order service, queries, storage contracts
 src/ModernInvoices.Infrastructure/ C# JSON repository, CSV exporter, demo seed data
 src/ModernInvoices.Api/            C# endpoints + wwwroot dashboard
-src/ModernInvoices.Cli/            C# command menu
 tests/LegacyBaseline/             Test-only linked legacy VB.NET source
 tests/MigrationChecks/            C# behavior and persistence checks
 scripts/                          Real HTTP checks and legacy desktop build check

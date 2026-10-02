@@ -19,7 +19,7 @@ The migration demonstrates SOLID through specific dependency boundaries and exec
 - [Invoice calculator](../src/ModernInvoices.Core/InvoiceCalculator.cs) and [pricing contracts/default policies](../src/ModernInvoices.Core/PricingPolicies.cs)
 - [Storage contracts](../src/ModernInvoices.Core/IOrderRepository.cs) and [JSON implementation](../src/ModernInvoices.Infrastructure/JsonOrderRepository.cs)
 - [CSV exporter](../src/ModernInvoices.Infrastructure/OrderCsvExporter.cs)
-- [API dependency registration](../src/ModernInvoices.Api/Program.cs) and [CLI composition](../src/ModernInvoices.Cli/Program.cs)
+- [API dependency registration](../src/ModernInvoices.Api/Program.cs)
 - [SOLID checks](../tests/MigrationChecks/SolidChecks.cs) and [in-memory test repository](../tests/MigrationChecks/InMemoryOrderRepository.cs)
 
 ## Dependency direction
@@ -27,22 +27,21 @@ The migration demonstrates SOLID through specific dependency boundaries and exec
 ```mermaid
 flowchart TD
     API[API composition] --> Service[OrderService]
-    CLI[CLI composition] --> Service
     API --> Queries[Catalogue / history / report queries]
     Queries --> Reader[IOrderReader]
     Service --> Repository[IOrderRepository]
     Repository --> Reader
     Service --> Calculator[IInvoiceCalculator]
-    CalculatorImpl[InvoiceCalculator] -. implements .-> Calculator
+    CalculatorImpl[InvoiceCalculator] -- implements --> Calculator
     CalculatorImpl --> Discount[IDiscountPolicy]
     CalculatorImpl --> Tax[ITaxPolicy]
-    Json[JSON repository] -. implements .-> Repository
-    Memory[Test in-memory repository] -. implements .-> Repository
+    Json[JSON repository] -- implements --> Repository
+    Memory[Test in-memory repository] -- implements --> Repository
     API --> Csv[CSV exporter]
     Csv --> Models[Order models]
 ```
 
-The API container registers `IOrderReader` as the same singleton instance used for `IOrderRepository`. This matters: independent repository instances would have independent locks. The CLI constructs its dependencies explicitly at the entry point. Neither approach requires the Core library to locate services itself.
+The API container registers `IOrderReader` as the same singleton instance used for `IOrderRepository`. This matters: independent repository instances would have independent locks. The API supplies dependencies at startup, so the Core library does not need to locate services itself.
 
 ## Repository substitution has a behavioral contract
 
