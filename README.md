@@ -169,23 +169,25 @@ The check runner is an executable that exits nonzero on failure: **use `dotnet r
 
 The modern code applies **SOLID** with focused services, separate query/report/export classes, replaceable pricing policies, and storage abstractions owned by Core. Read-only queries depend on `IOrderReader`; order processing depends on `IOrderRepository` and `IInvoiceCalculator`. The API chooses the concrete implementations at startup. See [SOLID design and evidence](docs/SOLID.md) for the mapping, contracts, tests, and limits.
 
-The diagram shows each application's runtime flow. They run independently: the VB.NET desktop uses VB.NET business code, and the modern dashboard uses C# business code. Verification tests compare their totals and order behavior separately.
+The diagram shows the components each application uses. They run independently: the VB.NET desktop uses VB.NET business code, and the modern dashboard uses C# business code. Verification tests compare their totals and order behavior separately.
 
 ```mermaid
 flowchart LR
     subgraph Legacy["Before · VB.NET / Framework 4.8"]
         L[Windows Forms desktop] --> S[DataSet order store]
-        S --> V[VB.NET calculator]
-        S --> X[(XML data file)]
+        S -- Calculates totals with --> V[VB.NET calculator]
+        S -- Automatically saves orders and stock to --> X[(XML data file)]
     end
     subgraph Modern["After · C# / .NET 8"]
         UI[Browser dashboard] --> API[ASP.NET Core API]
         API --> D[C# domain services]
         D --> R[Storage through Core interfaces]
         R --> J[JSON repository]
-        J --> F[(JSON data file)]
+        J -- Automatically saves orders and stock to --> F[(JSON data file)]
     end
 ```
+
+When placing an order, the legacy store validates the basket, calculates its totals, adds the order, deducts stock, and then saves the updated data to XML automatically. Reviewing totals does not save an order. Cancelling an order restores stock and saves the change. **Export CSV** is a separate, optional action that creates a CSV report; the XML file is the application's saved data.
 
 ```text
 LegacyInvoices.sln                 VB.NET Framework desktop solution
